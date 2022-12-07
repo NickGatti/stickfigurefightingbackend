@@ -11,23 +11,30 @@ app.use(session({
     saveUninitialized: true
   }))
 
-const PlayerOne = {
-    name: 'Player 1',
-    active: false,
-    session: null,
-}
-
-const PlayerTwo = {
-    name: 'Player 2',
-    active: false,
-    session: null,
+const players = {
+    playerOne: null,
+    playerTwo: null,
 }
 
 app.use('/', express.static(path.join(__dirname, '../../stickfigurefightingfrontend/build')))
 
-// app.get('/', (req, res) => {
-//   res.send('Hello World!')
-// })
+app.get('/player', (req, res) => {
+    if (!players.playerOne) {
+        players.playerOne = req.session.id
+        req.session.player = 'Player one'
+        res.json({
+            player: 1,
+        })
+        console.log('Player One has joined.')
+    } else if (players.playerOne && !players.playerTwo) {
+        players.playerTwo = req.session.id
+        req.session.player = 'Player two'
+        res.json({
+            player: 2,
+        })
+        console.log('Player Two has joined.')
+    }
+})
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
